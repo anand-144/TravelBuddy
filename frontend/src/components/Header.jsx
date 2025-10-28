@@ -1,5 +1,6 @@
 import React from "react";
 import { FcGlobe } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -12,6 +13,7 @@ const Header = () => {
       <div className="absolute bottom-0 right-0 w-60 h-60 bg-green-500/30 rounded-full blur-3xl" />
 
       {/* Left: Logo + Title */}
+    <Link to={'/'}>
       <div className="flex items-center gap-3 relative z-10">
         {/* Static Globe Icon */}
         <FcGlobe className="text-4xl sm:text-5xl drop-shadow-[0_0_20px_rgba(59,130,246,0.6)] animate-spin-slow" />
@@ -21,6 +23,7 @@ const Header = () => {
           TravelBuddy
         </h1>
       </div>
+    </Link>
 
       {/* Right: Button */}
       <button className="relative z-10 px-5 py-2 sm:px-6 sm:py-2.5 font-semibold text-white bg-gradient-to-r from-blue-500 via-green-400 to-yellow-400 rounded-full shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95">
