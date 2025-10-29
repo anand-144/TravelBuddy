@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Autocomplete from "react-google-autocomplete";
 import {
+  AI_PROMPT,
   SelectBudgetOptions,
   SelectTravelersList,
 } from "../components/Options";
 
 const CreateTrip = () => {
+  const navigate = useNavigate();
+
   const [place, setPlace] = useState("");
   const [formData, setFormData] = useState({
     location: "",
@@ -28,14 +32,28 @@ const CreateTrip = () => {
     console.log("Form data:", formData);
   }, [formData]);
 
+  const handleGenerateTrip = () => {
+    if (
+      !formData.location ||
+      !formData.duration ||
+      !formData.travelers ||
+      !formData.budget
+    ) {
+      alert("Please fill all fields before generating your trip.");
+      return;
+    }
+
+    navigate("/trip-result", { state: formData });
+  };
+
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10">
       <h2 className="font-bold text-3xl flex items-center gap-2">
-        Tell us your travel preference <span>🌍</span>
+        Tell us your travel preferences <span>🌍</span>
       </h2>
       <p className="mt-3 text-gray-500 text-xl">
-        Just provide some basic information, and our trip planner will generate
-        a customized itinerary based on your preferences.
+        Just provide some basic information, and our AI trip planner will
+        generate a customized itinerary based on your preferences.
       </p>
 
       {/* Destination + Duration */}
@@ -49,9 +67,16 @@ const CreateTrip = () => {
           <Autocomplete
             apiKey={import.meta.env.VITE_GOOGLE_PLACES_API_KEY}
             onPlaceSelected={(place) => {
-              const location = place.formatted_address;
-              setPlace(location);
-              handleInputChange("location", location);
+              if (place && place.formatted_address) {
+                const location = place.formatted_address;
+                setPlace(location);
+                handleInputChange("location", location);
+              } else if (place && place.name) {
+                setPlace(place.name);
+                handleInputChange("location", place.name);
+              } else {
+                console.warn("⚠️ No valid place selected:", place);
+              }
             }}
             options={{ types: ["(cities)"] }}
             placeholder="Search for destination..."
@@ -79,7 +104,7 @@ const CreateTrip = () => {
       {/* Budget Options */}
       <div className="mt-20">
         <h2 className="text-xl my-3 font-medium flex items-center gap-2">
-          What is Your Budget? <span>💰</span>
+          What is your budget? <span>💰</span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-5">
           {SelectBudgetOptions.map((item, index) => (
@@ -145,7 +170,7 @@ const CreateTrip = () => {
       {/* Generate Trip Button */}
       <div className="flex justify-end my-16">
         <button
-          onClick={() => console.log("Generated trip:", formData)}
+          onClick={handleGenerateTrip}
           className="relative px-10 py-4 text-lg font-semibold rounded-full text-white bg-black cursor-pointer hover:bg-pink-950 transition-all duration-300 shadow-md hover:shadow-lg"
         >
           Generate Trip 🤖

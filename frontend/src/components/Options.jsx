@@ -63,3 +63,12 @@ export const SelectBudgetOptions = [
     icon: "🧗‍♂️",
   },
 ];
+
+export const AI_PROMPT =
+  'Generate a Travel Plan for Location: {location}, for {duration} Days for {travelers} with a {budget} budget. ' +
+  'Provide: ' +
+  '1) A list of hotels (name, address, price, image URL, geo coordinates, rating, and short description), ' +
+  '2) A 3-day itinerary (day-wise plan with place name, details, image URL, geo coordinates, ticket pricing, rating, and best time to visit). ' +
+  'Return strictly valid JSON in this format: ' +
+  '{ "hotels": [ ... ], "itinerary": { "day1": [ ... ], "day2": [ ... ], "day3": [ ... ] } }. ' +
+  'Do not include markdown, code blocks, or explanations — only JSON.';
