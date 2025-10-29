@@ -78,6 +78,13 @@ const TripResult = () => {
     return price;
   };
 
+  // ✅ Navigate to /trip-map with full data
+  const handleMapRedirect = () => {
+    navigate("/trip-map", {
+      state: { location: tripData.location, hotels, itinerary },
+    });
+  };
+
   return (
     <div className="max-w-6xl mx-auto mt-10 p-6 bg-gray-50 rounded-2xl shadow-lg">
       {/* 🌄 Destination Banner */}
@@ -89,9 +96,17 @@ const TripResult = () => {
         />
       )}
 
-      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-        🧭 Your AI-Generated Travel Plan
-      </h2>
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-800">
+          🧭 Your AI-Generated Travel Plan
+        </h2>
+        <button
+          onClick={handleMapRedirect}
+          className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+        >
+          View Map 📍
+        </button>
+      </div>
 
       {/* 🏨 Hotels Section */}
       {hotels.length > 0 && (
