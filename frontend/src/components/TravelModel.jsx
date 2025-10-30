@@ -32,19 +32,15 @@ const Model = () => {
   return <primitive object={model} scale={0.02} position={[0, 0, 0]} />;
 };
 
-// ✅ Responsive camera zoom adjustment
 const ResponsiveCamera = () => {
   const { camera, size } = useThree();
 
   useEffect(() => {
     if (size.width < 640) {
-      // mobile view
       camera.position.set(2.5, 1.8, 3.5);
     } else if (size.width < 1024) {
-      // tablet
       camera.position.set(3, 2, 4);
     } else {
-      // desktop
       camera.position.set(3.5, 2.3, 5);
     }
     camera.updateProjectionMatrix();
@@ -57,16 +53,14 @@ const TravelModel = () => {
   const canvasRef = useRef();
 
   return (
-    <div className="fixed flex items-center justify-center z-0 opacity-70">
+    <div className="fixed inset-0 z-0 opacity-100 pointer-events-none">
       <Canvas
         shadows
-        style={{ background: "transparent", width: "100vw", height: "100vh" }}
+        style={{ background: "transparent" }}
         ref={canvasRef}
         camera={{ position: [3.5, 2.3, 5], fov: 45 }}
       >
         <ResponsiveCamera />
-
-        {/* Lighting setup */}
         <ambientLight intensity={0.25} />
         <directionalLight
           position={[4, 6, 5]}
@@ -75,12 +69,8 @@ const TravelModel = () => {
           castShadow
         />
         <directionalLight position={[-5, -2, -3]} intensity={0.3} color="#223366" />
-
-        {/* Environment and model */}
         <Environment preset="night" />
         <Model />
-
-        {/* Controls */}
         <OrbitControls
           enableZoom={false}
           enablePan={false}
