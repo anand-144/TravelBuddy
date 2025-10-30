@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { FaRocket, FaMapMarkedAlt, FaBrain, FaRegClock, FaShieldAlt, FaGlobe } from 'react-icons/fa';
 
+
 const Home = () => {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-violet-50 via-blue-50 to-cyan-50">
+
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -28,7 +30,7 @@ const Home = () => {
 
         {/* Main Heading */}
         <h1 className="font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <span className="bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
             Dream. Plan.
           </span>
           <br />
