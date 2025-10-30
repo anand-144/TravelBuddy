@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Autocomplete from "react-google-autocomplete";
 import {
-  AI_PROMPT,
   SelectBudgetOptions,
   SelectTravelersList,
 } from "../components/Options";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const CreateTrip = () => {
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ const CreateTrip = () => {
 
   const [selectedBudget, setSelectedBudget] = useState(null);
   const [selectedTraveler, setSelectedTraveler] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({
@@ -32,7 +33,44 @@ const CreateTrip = () => {
     console.log("Form data:", formData);
   }, [formData]);
 
+  // ✅ Google login using token flow (not auth-code)
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      console.log("✅ Full Google Token Response:", tokenResponse);
+
+      try {
+        // Fetch user info directly from Google API
+        const userInfo = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+            },
+          }
+        );
+
+        const data = await userInfo.json();
+        console.log("👤 Google User Info:", data);
+
+        // Save user info in localStorage
+        localStorage.setItem("user", JSON.stringify(data));
+
+        alert(`Welcome, ${data.name}!`);
+        setOpenDialog(false);
+      } catch (error) {
+        console.error("❌ Failed to fetch user info:", error);
+      }
+    },
+    onError: (error) => console.log("❌ Login Failed:", error),
+  });
+
   const handleGenerateTrip = () => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      setOpenDialog(true);
+      return;
+    }
+
     if (
       !formData.location ||
       !formData.duration ||
@@ -47,7 +85,7 @@ const CreateTrip = () => {
   };
 
   return (
-    <div className="sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10">
+    <div className="sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10 relative">
       <h2 className="font-bold text-3xl flex items-center gap-2">
         Tell us your travel preferences <span>🌍</span>
       </h2>
@@ -58,12 +96,10 @@ const CreateTrip = () => {
 
       {/* Destination + Duration */}
       <div className="mt-20 flex flex-col gap-10">
-        {/* Destination Input */}
         <div>
           <h2 className="text-xl my-3 font-medium flex items-center gap-2">
             What is your destination of choice? <span>📍</span>
           </h2>
-
           <Autocomplete
             apiKey={import.meta.env.VITE_GOOGLE_PLACES_API_KEY}
             onPlaceSelected={(place) => {
@@ -84,7 +120,6 @@ const CreateTrip = () => {
           />
         </div>
 
-        {/* Trip Duration */}
         <div>
           <h2 className="text-xl my-3 font-medium flex items-center gap-2">
             How many days are you planning your trip? <span>🗓️</span>
@@ -101,7 +136,7 @@ const CreateTrip = () => {
         </div>
       </div>
 
-      {/* Budget Options */}
+      {/* Budget */}
       <div className="mt-20">
         <h2 className="text-xl my-3 font-medium flex items-center gap-2">
           What is your budget? <span>💰</span>
@@ -124,7 +159,9 @@ const CreateTrip = () => {
               <h2 className="font-semibold text-lg">{item.title}</h2>
               <p
                 className={`text-sm mt-1 ${
-                  selectedBudget === index ? "text-sky-100" : "text-gray-500"
+                  selectedBudget === index
+                    ? "text-sky-100"
+                    : "text-gray-500"
                 }`}
               >
                 {item.desc}
@@ -134,7 +171,7 @@ const CreateTrip = () => {
         </div>
       </div>
 
-      {/* Travelers Options */}
+      {/* Travelers */}
       <div className="mt-20 mb-20">
         <h2 className="text-xl my-3 font-medium flex items-center gap-2">
           Who do you plan on traveling with? <span>🧳</span>
@@ -157,7 +194,9 @@ const CreateTrip = () => {
               <h2 className="font-semibold text-lg">{item.title}</h2>
               <p
                 className={`text-sm mt-1 ${
-                  selectedTraveler === index ? "text-pink-100" : "text-gray-500"
+                  selectedTraveler === index
+                    ? "text-pink-100"
+                    : "text-gray-500"
                 }`}
               >
                 {item.desc}
@@ -176,6 +215,34 @@ const CreateTrip = () => {
           Generate Trip 🤖
         </button>
       </div>
+
+      {/* --- Dialog Box (Custom Google Sign In) --- */}
+      {openDialog && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="bg-white rounded-3xl shadow-2xl w-11/12 sm:w-[400px] p-8 text-center">
+            <h2 className="text-3xl font-bold text-pink-600 mb-4">
+              ✈️ Travel Buffy
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Please sign in with Google to continue planning your trip.
+            </p>
+
+            <button
+              onClick={login}
+              className="px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all"
+            >
+              Sign in with Google
+            </button>
+
+            <button
+              onClick={() => setOpenDialog(false)}
+              className="mt-6 px-6 py-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-all"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
