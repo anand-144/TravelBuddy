@@ -135,6 +135,7 @@ const Home = () => {
             <h3 className="font-bold text-xl mb-3 text-gray-800">Always Free</h3>
             <p className="text-gray-600 leading-relaxed">Premium features at no cost. Start planning your dream trip today</p>
           </div>
+          
 
         </div>
       </div>
