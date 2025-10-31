@@ -10,7 +10,6 @@ import Register from './pages/Register';
 import Footer from './components/Footer';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import MemoryBoard from './components/MemoryBoard';
 
 // Separate wrapper to access useLocation inside Router
 const AppContent = () => {
@@ -31,7 +30,6 @@ const AppContent = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/trip-result" element={<TripResult />} />
         <Route path="/trip-map" element={<TripMap />} />
-        <Route path="/memory-board" element={<MemoryBoard />} />
       </Routes>
 
       {/* ✅ Footer visible on all pages except login/register */}
