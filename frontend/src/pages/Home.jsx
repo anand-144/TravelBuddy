@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaRocket, FaMapMarkedAlt, FaBrain, FaRegClock, FaShieldAlt, FaGlobe } from 'react-icons/fa';
+import ThreeDModel from '../components/three/ThreeDModel';
 
 
 const Home = () => {
@@ -38,6 +39,11 @@ const Home = () => {
             Explore.
           </span>
         </h1>
+
+         {/* 🧭 3D Model Section */}
+        <div className="w-full max-w-4xl h-[400px] mb-10 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <ThreeDModel />
+        </div>
 
         {/* Description */}
         <p className="text-lg sm:text-xl text-gray-700 max-w-2xl leading-relaxed bg-white/60 backdrop-blur-xl p-6 sm:p-8 rounded-3xl mb-10 shadow-xl border border-white/20 animate-fade-in" style={{ animationDelay: '0.2s' }}>
