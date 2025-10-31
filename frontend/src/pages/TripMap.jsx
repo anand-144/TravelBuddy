@@ -146,17 +146,26 @@ const TripMap = () => {
             <Marker key={i} position={[marker.lat, marker.lng]} icon={marker.icon}>
               <Popup>
                 <div className="w-44 text-center">
-                  {marker.image && (
+                  {marker.image ? (
                     <img
                       src={marker.image}
                       alt={marker.name}
                       className="w-full h-24 object-cover rounded-md mb-2"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://via.placeholder.com/200x120.png?text=Image+Unavailable";
+                      }}
                     />
+                  ) : (
+                    <div className="w-full h-24 flex flex-col items-center justify-center bg-gradient-to-br from-violet-100 via-blue-100 to-cyan-100 rounded-md text-gray-700 text-xs font-medium animate-pulse">
+                      🚫 Image Unavailable
+                    </div>
                   )}
                   <h3 className="font-semibold text-sm mb-1">{marker.name}</h3>
                   <p className="text-xs text-gray-600">{marker.type}</p>
                 </div>
               </Popup>
+
             </Marker>
           ))}
         </MapContainer>
