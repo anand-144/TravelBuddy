@@ -6,6 +6,7 @@ import {
   SelectTravelersList,
 } from "../components/Options";
 import { useGoogleLogin } from "@react-oauth/google";
+import { FaGlobeAsia } from "react-icons/fa";
 
 const CreateTrip = () => {
   const navigate = useNavigate();
@@ -76,8 +77,9 @@ const CreateTrip = () => {
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-indigo-50 px-6 sm:px-10 md:px-32 lg:px-56 py-16">
       {/* Header */}
       <div className="text-center mb-12">
-        <h2 className="font-extrabold text-4xl sm:text-5xl bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
-          Plan Your Dream Trip 🌍
+        <h2 className="flex items-center justify-center gap-3 font-extrabold text-4xl sm:text-5xl bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
+          Plan Your Dream Trip
+          <FaGlobeAsia className="text-4xl sm:text-5xl text-blue-600 transform group-hover:rotate-12 transition-transform duration-300" />
         </h2>
         <p className="mt-4 text-gray-600 text-lg max-w-2xl mx-auto">
           Tell us a few details and let AI craft a personalized travel
@@ -134,18 +136,16 @@ const CreateTrip = () => {
                 setSelectedBudget(index);
                 handleInputChange("budget", item.title);
               }}
-              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${
-                selectedBudget === index
+              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${selectedBudget === index
                   ? "bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-xl"
                   : "bg-white border-gray-200 hover:border-indigo-400 hover:shadow-md"
-              }`}
+                }`}
             >
               <div className="text-4xl mb-2">{item.icon}</div>
               <h3 className="font-semibold text-lg">{item.title}</h3>
               <p
-                className={`text-sm mt-1 ${
-                  selectedBudget === index ? "text-sky-100" : "text-gray-500"
-                }`}
+                className={`text-sm mt-1 ${selectedBudget === index ? "text-sky-100" : "text-gray-500"
+                  }`}
               >
                 {item.desc}
               </p>
@@ -167,18 +167,16 @@ const CreateTrip = () => {
                 setSelectedTraveler(index);
                 handleInputChange("travelers", item.title);
               }}
-              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${
-                selectedTraveler === index
+              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${selectedTraveler === index
                   ? "bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-xl"
                   : "bg-white border-gray-200 hover:border-pink-400 hover:shadow-md"
-              }`}
+                }`}
             >
               <div className="text-4xl mb-2">{item.icon}</div>
               <h3 className="font-semibold text-lg">{item.title}</h3>
               <p
-                className={`text-sm mt-1 ${
-                  selectedTraveler === index ? "text-pink-100" : "text-gray-500"
-                }`}
+                className={`text-sm mt-1 ${selectedTraveler === index ? "text-pink-100" : "text-gray-500"
+                  }`}
               >
                 {item.desc}
               </p>

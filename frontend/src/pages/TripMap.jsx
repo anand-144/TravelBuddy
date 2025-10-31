@@ -91,12 +91,12 @@ const TripMap = () => {
   ];
 
   return (
-    <div className="h-screen w-full flex flex-col lg:flex-row">
-      {/* Map Container */}
-      <div className="flex-1 relative">
+    <div className="flex flex-col lg:flex-row h-screen w-full">
+      {/* Map Section */}
+      <div className="flex-1 relative min-h-[50vh] sm:min-h-[60vh] lg:min-h-screen">
         {/* Header */}
         <div className="absolute top-0 left-0 right-0 z-[1000] bg-white/80 backdrop-blur-xl p-4 m-4 rounded-2xl flex items-center justify-between shadow-xl border border-white/20">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
+          <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2 text-gray-800">
             <FaMapMarkerAlt className="text-violet-600" />
             {city}
           </h2>
@@ -132,10 +132,12 @@ const TripMap = () => {
           </div>
         </div>
 
+        {/* Map */}
         <MapContainer
           center={cityCoords}
           zoom={12}
           style={{ height: '100%', width: '100%' }}
+          className="rounded-none lg:rounded-r-3xl overflow-hidden"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <RecenterMap coords={cityCoords} />
@@ -161,7 +163,7 @@ const TripMap = () => {
       </div>
 
       {/* Sidebar */}
-      <div className="w-full lg:w-96 bg-gradient-to-br from-white to-violet-50/30 border-l border-gray-200 overflow-y-auto p-6">
+      <div className="w-full lg:w-96 bg-gradient-to-br from-white to-violet-50/30 border-t lg:border-t-0 lg:border-l border-gray-200 overflow-y-auto p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center shadow-lg">
             <FaHotel className="text-white" />
@@ -169,30 +171,28 @@ const TripMap = () => {
           <h3 className="text-xl font-bold text-gray-800">Places</h3>
         </div>
 
-        {allMarkers.length === 0 && (
-          <p className="text-gray-600 text-center py-8">
-            No locations available
-          </p>
-        )}
-
-        <div className="space-y-4">
-          {allMarkers.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-4 p-4 bg-white/70 backdrop-blur-xl rounded-xl hover:shadow-lg transition-all border border-white/20"
-            >
-              <img
-                src={item.image || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e'}
-                alt={item.name}
-                className="w-20 h-20 object-cover rounded-lg shadow-md"
-              />
-              <div className="flex-1">
-                <h4 className="font-semibold mb-1 text-gray-800">{item.name}</h4>
-                <p className="text-xs text-gray-600">{item.type}</p>
+        {allMarkers.length === 0 ? (
+          <p className="text-gray-600 text-center py-8">No locations available</p>
+        ) : (
+          <div className="space-y-4">
+            {allMarkers.map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-4 p-4 bg-white/70 backdrop-blur-xl rounded-xl hover:shadow-lg transition-all border border-white/20"
+              >
+                <img
+                  src={item.image || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e'}
+                  alt={item.name}
+                  className="w-20 h-20 object-cover rounded-lg shadow-md"
+                />
+                <div className="flex-1">
+                  <h4 className="font-semibold mb-1 text-gray-800">{item.name}</h4>
+                  <p className="text-xs text-gray-600">{item.type}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

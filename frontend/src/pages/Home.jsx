@@ -47,7 +47,7 @@ const Home = () => {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-in" style={{ animationDelay: '0.3s' }}>
           <Link to="/create-trip">
-            <button className="group relative px-8 py-4 sm:px-10 sm:py-5 font-bold text-lg bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
+            <button className="group relative px-8 py-4 sm:px-10 sm:py-5 font-bold text-lg bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden cursor-pointer">
               <span className="relative z-10 flex items-center gap-2">
                 <FaRocket className="group-hover:rotate-12 transition-transform" />
                 Start Planning Free
@@ -57,7 +57,7 @@ const Home = () => {
           </Link>
 
           <a href="#features">
-            <button className="px-8 py-4 sm:px-10 sm:py-5 font-bold text-lg bg-white/80 backdrop-blur-xl text-gray-700 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20">
+            <button className="px-8 py-4 sm:px-10 sm:py-5 font-bold text-lg bg-white/80 backdrop-blur-xl text-gray-700 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20 cursor-pointer">
               Learn More
             </button>
           </a>

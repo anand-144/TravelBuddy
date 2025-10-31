@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FaGlobeAmericas, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaGlobeAsia, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import { useEffect } from 'react';
 
 const Header = () => {
@@ -29,7 +29,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <FaGlobeAmericas className="text-3xl text-violet-600 group-hover:rotate-12 transition-transform duration-300" />
+            <FaGlobeAsia className="text-3xl text-violet-600 group-hover:rotate-360 transition-all duration-1000" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
               TravelBuddy
             </h1>
