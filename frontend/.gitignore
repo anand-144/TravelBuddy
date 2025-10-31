@@ -11,7 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
+# Never upload secrets
 .env
+.env.local
+.env.development
+.env.production
+x
 
 # Editor directories and files
 .vscode/*
