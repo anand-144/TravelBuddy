@@ -3,31 +3,33 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import memoryRoutes from "./routes/memoryRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-// Connect to MongoDB
+// Connect DB
 connectDB();
 
-// Middlewares
-app.use(cors({
-  origin: "http://localhost:5173", // your React app port
-  credentials: true,
-}));
+// Middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your React app
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-// Test route
-app.get("/", (req, res) => {
-  res.send("✅ API is running...");
-});
+// Health check
+app.get("/", (req, res) => res.send("✅ API is running..."));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/memories", memoryRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);
