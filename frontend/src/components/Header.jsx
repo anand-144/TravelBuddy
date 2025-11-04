@@ -14,7 +14,7 @@ const Header = () => {
       console.log("🧑‍💻 Logged in user data:", {
         name: user.full_name || user.name,
         email: user.email,
-        avatar: user.avatar_url || user.picture,
+        avatar: user?.raw?.avatar_url || user.picture,
         raw: user,
       });
     }
@@ -56,9 +56,9 @@ const Header = () => {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-violet-50 to-blue-50 rounded-full hover:shadow-md transition-all"
                 >
-                  {user.avatar_url ? (
+                  {user?.raw?.avatar_url ? (
                     <img
-                      src={user.avatar_url}
+                      src={user?.raw?.avatar_url}
                       alt={user.full_name || user.email}
                       className="w-8 h-8 rounded-full border-2 border-violet-300"
                     />

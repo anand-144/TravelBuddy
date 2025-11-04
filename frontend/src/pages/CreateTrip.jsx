@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Autocomplete from "react-google-autocomplete";
-import {
-  SelectBudgetOptions,
-  SelectTravelersList,
-} from "../components/Options";
-import { useGoogleLogin } from "@react-oauth/google";
+import { SelectBudgetOptions, SelectTravelersList } from "../components/Options";
 import { FaGlobeAsia } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext"; // ✅ use global auth context
 
 const CreateTrip = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth(); // ✅ access user and loading state
 
-  const [place, setPlace] = useState("");
   const [formData, setFormData] = useState({
     location: "",
     duration: "",
@@ -33,30 +30,17 @@ const CreateTrip = () => {
     console.log("Form data:", formData);
   }, [formData]);
 
-  // ✅ Google login (for consistency with rest of app)
-  const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const userInfo = await fetch(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          {
-            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-          }
-        );
-        const data = await userInfo.json();
-        localStorage.setItem("user", JSON.stringify(data));
-        alert(`Welcome, ${data.name}!`);
-      } catch (error) {
-        console.error("❌ Failed to fetch Google user info:", error);
-      }
-    },
-    onError: (error) => console.log("❌ Login Failed:", error),
-  });
+  // Redirect to login if not logged in (after AuthContext finishes loading)
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
 
   const handleGenerateTrip = () => {
-    const user = localStorage.getItem("user");
     if (!user) {
-      navigate("/register");
+      alert("Please log in to generate your trip.");
+      navigate("/login");
       return;
     }
 
@@ -72,6 +56,14 @@ const CreateTrip = () => {
 
     navigate("/trip-result", { state: formData });
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600">
+        Loading your account...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-indigo-50 px-6 sm:px-10 md:px-32 lg:px-56 py-16">
@@ -95,13 +87,8 @@ const CreateTrip = () => {
         <Autocomplete
           apiKey={import.meta.env.VITE_GOOGLE_PLACES_API_KEY}
           onPlaceSelected={(place) => {
-            if (place?.formatted_address) {
-              setPlace(place.formatted_address);
-              handleInputChange("location", place.formatted_address);
-            } else if (place?.name) {
-              setPlace(place.name);
-              handleInputChange("location", place.name);
-            }
+            const name = place?.formatted_address || place?.name;
+            if (name) handleInputChange("location", name);
           }}
           options={{ types: ["(cities)"] }}
           placeholder="Search for your destination..."
@@ -136,16 +123,18 @@ const CreateTrip = () => {
                 setSelectedBudget(index);
                 handleInputChange("budget", item.title);
               }}
-              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${selectedBudget === index
+              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${
+                selectedBudget === index
                   ? "bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-xl"
                   : "bg-white border-gray-200 hover:border-indigo-400 hover:shadow-md"
-                }`}
+              }`}
             >
               <div className="text-4xl mb-2">{item.icon}</div>
               <h3 className="font-semibold text-lg">{item.title}</h3>
               <p
-                className={`text-sm mt-1 ${selectedBudget === index ? "text-sky-100" : "text-gray-500"
-                  }`}
+                className={`text-sm mt-1 ${
+                  selectedBudget === index ? "text-sky-100" : "text-gray-500"
+                }`}
               >
                 {item.desc}
               </p>
@@ -167,16 +156,18 @@ const CreateTrip = () => {
                 setSelectedTraveler(index);
                 handleInputChange("travelers", item.title);
               }}
-              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${selectedTraveler === index
+              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${
+                selectedTraveler === index
                   ? "bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-xl"
                   : "bg-white border-gray-200 hover:border-pink-400 hover:shadow-md"
-                }`}
+              }`}
             >
               <div className="text-4xl mb-2">{item.icon}</div>
               <h3 className="font-semibold text-lg">{item.title}</h3>
               <p
-                className={`text-sm mt-1 ${selectedTraveler === index ? "text-pink-100" : "text-gray-500"
-                  }`}
+                className={`text-sm mt-1 ${
+                  selectedTraveler === index ? "text-pink-100" : "text-gray-500"
+                }`}
               >
                 {item.desc}
               </p>
