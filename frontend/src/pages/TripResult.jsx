@@ -9,6 +9,8 @@ import TravelTips from "../components/trip/TravelTips";
 import Loader from "../components/Loader";
 import ErrorState from "../components/ErrorState";
 import { FaMapMarkedAlt } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const TripResult = () => {
   const location = useLocation();
@@ -18,6 +20,7 @@ const TripResult = () => {
   const [loading, setLoading] = useState(true);
   const [aiResult, setAiResult] = useState(null);
 
+  // 🔹 Fetch AI-generated trip plan
   useEffect(() => {
     if (!tripData) {
       navigate("/create-trip");
@@ -39,6 +42,7 @@ const TripResult = () => {
         setLoading(false);
       }
     };
+
     fetchPlan();
   }, [tripData, navigate]);
 
@@ -46,6 +50,7 @@ const TripResult = () => {
   if (!aiResult || aiResult.error)
     return <ErrorState onBack={() => navigate("/create-trip")} />;
 
+  // 🔹 Destructure AI results
   const {
     hotels,
     itinerary,
@@ -55,6 +60,43 @@ const TripResult = () => {
     image,
   } = aiResult;
 
+  // 🔹 Save Trip to Backend
+  const handleSaveTrip = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please log in to save your trip!");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/trips/save",
+        {
+          location: tripData.location,
+          duration: tripData.duration,
+          travelers: tripData.travelers,
+          budget: tripData.budget,
+          total_estimate,
+          image,
+          hotels,
+          itinerary,
+          optional_experiences,
+          travel_tips,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success("Trip saved successfully!");
+      console.log("✅ Saved trip:", res.data.trip);
+    } catch (err) {
+      console.error("❌ Save trip failed:", err);
+      toast.error("Failed to save trip");
+    }
+  };
+
+  // 🔹 Helper to format prices
   const renderPrice = (price) =>
     price
       ? typeof price === "object"
@@ -62,7 +104,7 @@ const TripResult = () => {
         : price
       : "N/A";
 
-  // 🔹 Redirect handler for map view
+  // 🔹 Map redirect
   const handleMapRedirect = () => {
     navigate("/trip-map", {
       state: { location: tripData.location, hotels, itinerary },
@@ -80,7 +122,7 @@ const TripResult = () => {
           totalEstimate={total_estimate}
         />
 
-        {/* 🔹 View on Map Button (inline, no import needed) */}
+        {/* 🔹 View on Map Button */}
         <div className="flex justify-end mb-10">
           <button
             onClick={handleMapRedirect}
@@ -91,14 +133,21 @@ const TripResult = () => {
           </button>
         </div>
 
-        {/* Sections */}
+        {/* 🔹 Sections */}
         <HotelList hotels={hotels} renderPrice={renderPrice} />
         <ItinerarySection itinerary={itinerary} renderPrice={renderPrice} />
         <OptionalExperiences experiences={optional_experiences} />
         <TravelTips tips={travel_tips} />
 
-        {/* 🔹 Plan Another Trip CTA */}
-        <div className="flex justify-center mt-16">
+        {/* 🔹 Save & Plan Buttons */}
+        <div className="flex justify-center gap-6 mt-16">
+          <button
+            onClick={handleSaveTrip}
+            className="px-10 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-full font-bold hover:shadow-2xl transition-all hover:scale-105"
+          >
+            Save This Trip
+          </button>
+
           <button
             onClick={() => navigate("/create-trip")}
             className="px-10 py-4 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full font-bold hover:shadow-2xl transition-all hover:scale-105"

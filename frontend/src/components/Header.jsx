@@ -76,7 +76,7 @@ const Header = () => {
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-xl shadow-lg py-2 animate-fadeIn">
                     <Link
-                      to="/your-trips"
+                      to="/saved-trips"
                       className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-violet-50 hover:text-violet-600 transition"
                       onClick={() => setDropdownOpen(false)}
                     >

@@ -4,6 +4,8 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import memoryRoutes from "./routes/memoryRoutes.js";
+import tripRoutes from "./routes/tripRoutes.js";
+
 
 dotenv.config();
 
@@ -27,6 +29,8 @@ app.get("/", (req, res) => res.send("✅ API is running..."));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/memories", memoryRoutes);
+app.use("/api/trips", tripRoutes);
+
 
 // Start server
 const PORT = process.env.PORT || 5000;
