@@ -26,6 +26,7 @@ const TripResult = () => {
       navigate("/create-trip");
       return;
     }
+    
 
     const fetchPlan = async () => {
       try {
@@ -109,7 +110,9 @@ const TripResult = () => {
     navigate("/trip-map", {
       state: { location: tripData.location, hotels, itinerary },
     });
+    
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-blue-50 to-cyan-50">

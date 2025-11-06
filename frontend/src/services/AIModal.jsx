@@ -6,12 +6,23 @@ const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 const UNSPLASH_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 const lastPlanCache = {};
 const MAX_DAYS_PER_SEGMENT = 10;
+const isDev = import.meta.env.DEV;
 
 /* ---------------------------------------------------------
    🧹 Ultra-Robust JSON Cleaner + Auto-Healer
 --------------------------------------------------------- */
 function safeJSONParse(rawText) {
   if (!rawText || typeof rawText !== "string") return null;
+
+  const fallback = {
+    hotels: [],
+    itinerary: {},
+    optional_experiences: [],
+    travel_tips: [],
+    total_estimate: "N/A",
+    _rawText: rawText?.slice(0, 1000),
+    warning: true,
+  };
 
   try {
     return JSON.parse(rawText);
@@ -25,6 +36,8 @@ function safeJSONParse(rawText) {
         .replace(/\s{2,}/g, " ")
         .replace(/“|”|‘|’/g, '"')
         .replace(/,\s*([\]}])/g, "$1")
+        .replace(/([a-zA-Z0-9_]+):/g, '"$1":') // ensure keys quoted
+        .replace(/'/g, '"')                    // single → double quotes
         .trim();
 
       // Balance braces/brackets
@@ -44,17 +57,12 @@ function safeJSONParse(rawText) {
       const endIndex = Math.max(endCurly, endSquare);
       if (endIndex > -1) cleaned = cleaned.slice(0, endIndex + 1);
 
-      return JSON.parse(cleaned);
+      const parsed = JSON.parse(cleaned);
+      return parsed;
     } catch (err) {
-      console.warn("⚠️ AI output could not be parsed perfectly, returning fallback object.");
-      return {
-        hotels: [],
-        itinerary: {},
-        optional_experiences: [],
-        travel_tips: [],
-        total_estimate: "N/A",
-        _rawText: rawText?.slice(0, 1000),
-      };
+      if (isDev)
+        console.warn("⚠️ AI output malformed, using fallback object:", err.message);
+      return fallback;
     }
   }
 }
@@ -106,7 +114,7 @@ async function fetchUnsplashImage(query) {
     const data = await res.json();
     return data.results?.[0]?.urls?.regular || null;
   } catch (e) {
-    console.warn("Unsplash fetch failed:", e.message);
+    if (isDev) console.warn("Unsplash fetch failed:", e.message);
     return null;
   }
 }
@@ -195,7 +203,11 @@ export async function generateTravelPlan(location, duration, travelers, budget) 
 
         let fullText = "";
         for await (const chunk of responseStream) if (chunk.text) fullText += chunk.text;
+
         const parsed = safeJSONParse(fullText);
+        if (parsed?.warning && isDev)
+          console.warn("⚠️ Gemini output required cleanup or fallback for segment", i + 1);
+
         return parsed || {};
       } catch (err) {
         console.warn(`❌ Segment ${i + 1} failed:`, err);
@@ -216,9 +228,10 @@ export async function generateTravelPlan(location, duration, travelers, budget) 
         acc.optional_experiences.push(...(part.optional_experiences || []));
         acc.travel_tips.push(...(part.travel_tips || []));
         acc.itinerary = { ...acc.itinerary, ...(part.itinerary || {}) };
+        acc.warning = acc.warning || part.warning || false;
         return acc;
       },
-      { hotels: [], itinerary: {}, optional_experiences: [], travel_tips: [] }
+      { hotels: [], itinerary: {}, optional_experiences: [], travel_tips: [], warning: false }
     );
 
     const enriched = await enrichWithImages(merged, location);
