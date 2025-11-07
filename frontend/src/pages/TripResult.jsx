@@ -89,14 +89,19 @@ const TripResult = () => {
         }
       );
 
-      toast.success("Trip saved successfully!");
-      console.log("✅ Saved trip:", res.data.trip);
-    } catch (err) {
-      console.error("❌ Save trip failed:", err);
-      toast.error("Failed to save trip");
-    }
-  };
+      const { chatGroupId } = res.data;
+    toast.success("Trip saved successfully!");
 
+    if (chatGroupId) {
+      toast.success("Joined solo-traveler group — redirecting...");
+      // navigate to chat page
+      navigate(`/chat/${chatGroupId}`);
+    }
+  } catch (err) {
+    console.error("❌ Save trip failed:", err);
+    toast.error("Failed to save trip");
+  }
+};
   // 🔹 Helper to format prices
   const renderPrice = (price) =>
     price

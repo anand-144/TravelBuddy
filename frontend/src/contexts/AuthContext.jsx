@@ -1,3 +1,4 @@
+// frontend/src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -22,7 +23,11 @@ export const AuthProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setUser(res.data.user || res.data);
+        const userData = res.data.user || res.data;
+        setUser(userData);
+
+        // ✅ Also ensure userId stays in localStorage
+        if (userData?._id) localStorage.setItem("userId", userData._id);
       })
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
@@ -37,9 +42,11 @@ export const AuthProvider = ({ children }) => {
         fullName,
       });
 
-      // ✅ Save token consistently
-      localStorage.setItem("token", res.data.token);
-      setUser(res.data.user);
+      const { token, user } = res.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", user._id); // 🔹 ADD THIS
+      setUser(user);
+
       return { data: res.data };
     } catch (error) {
       return { error: error.response?.data || error.message };
@@ -54,8 +61,11 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      localStorage.setItem("token", res.data.token);
-      setUser(res.data.user);
+      const { token, user } = res.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", user._id); // 🔹 ADD THIS
+      setUser(user);
+
       return { data: res.data };
     } catch (error) {
       return { error: error.response?.data || error.message };
@@ -69,8 +79,11 @@ export const AuthProvider = ({ children }) => {
         const res = await axios.post("http://localhost:5000/api/auth/google", {
           credential: tokenResponse.access_token,
         });
-        localStorage.setItem("token", res.data.token);
-        setUser(res.data.user);
+
+        const { token, user } = res.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", user._id); // 🔹 ADD THIS
+        setUser(user);
       } catch (err) {
         console.error("Google login failed:", err);
       }
@@ -83,6 +96,7 @@ export const AuthProvider = ({ children }) => {
   // ✅ Logout
   const signOut = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId"); // 🔹 ALSO CLEAR THIS
     setUser(null);
   };
 
@@ -101,3 +115,4 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+  

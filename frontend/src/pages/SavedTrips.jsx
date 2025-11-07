@@ -12,6 +12,7 @@ import {
   FaGlobe,
   FaChevronDown,
   FaChevronUp,
+  FaComments,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -63,6 +64,19 @@ const SavedTrips = () => {
       setTrips((prev) => prev.filter((t) => t._id !== id));
     } catch (err) {
       toast.error("Failed to delete trip");
+    }
+  };
+
+  const handleJoinSoloChat = async (location) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(
+        `http://localhost:5000/api/chat/location/${encodeURIComponent(location)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      navigate(`/chat/${res.data._id}`);
+    } catch {
+      toast.error("No group exists yet — save the trip again to create & join it.");
     }
   };
 
@@ -130,7 +144,16 @@ const SavedTrips = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap gap-3 justify-end">
+                  {trip.travelers?.toLowerCase().includes("solo") && (
+                    <button
+                      onClick={() => handleJoinSoloChat(trip.location)}
+                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm rounded-full hover:bg-emerald-700 transition"
+                    >
+                      <FaComments /> Join Solo Chat
+                    </button>
+                  )}
+
                   <button
                     onClick={() =>
                       navigate("/trip-map", {
@@ -159,151 +182,93 @@ const SavedTrips = () => {
               <div className="border-t border-gray-200 px-6 pb-6">
                 {/* Hotels */}
                 {trip.hotels?.length > 0 && (
-                  <div className="mt-4">
-                    <button
-                      onClick={() => toggleSection(trip._id, "hotels")}
-                      className="flex justify-between items-center w-full text-left font-semibold text-blue-700 py-2"
-                    >
-                      <span className="flex items-center gap-2">
-                        <FaHotel /> Hotels ({trip.hotels.length})
-                      </span>
-                      {expanded[trip._id]?.hotels ? <FaChevronUp /> : <FaChevronDown />}
-                    </button>
-                    <AnimatePresence>
-                      {expanded[trip._id]?.hotels && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="grid md:grid-cols-2 gap-3 mt-2"
-                        >
-                          {trip.hotels.map((hotel, i) => (
-                            <div
-                              key={i}
-                              className="bg-blue-50 rounded-xl p-3 border border-blue-100 text-sm"
-                            >
-                              <h4 className="font-semibold">{hotel.name}</h4>
-                              <p>{hotel.address}</p>
-                              <p className="text-gray-500">
-                                ⭐ {hotel.rating} | 💵 {hotel.price}
-                              </p>
-                              <p className="mt-1 text-gray-600">
-                                {hotel.short_description}
-                              </p>
-                            </div>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  <CollapsibleSection
+                    trip={trip}
+                    expanded={expanded}
+                    toggleSection={toggleSection}
+                    section="hotels"
+                    title={`Hotels (${trip.hotels.length})`}
+                    icon={<FaHotel />}
+                    color="blue"
+                    content={trip.hotels.map((hotel, i) => (
+                      <div
+                        key={i}
+                        className="bg-blue-50 rounded-xl p-3 border border-blue-100 text-sm"
+                      >
+                        <h4 className="font-semibold">{hotel.name}</h4>
+                        <p>{hotel.address}</p>
+                        <p className="text-gray-500">
+                          ⭐ {hotel.rating} | 💵 {hotel.price}
+                        </p>
+                        <p className="mt-1 text-gray-600">{hotel.short_description}</p>
+                      </div>
+                    ))}
+                  />
                 )}
 
                 {/* Experiences */}
                 {trip.optional_experiences?.length > 0 && (
-                  <div className="mt-4">
-                    <button
-                      onClick={() => toggleSection(trip._id, "experiences")}
-                      className="flex justify-between items-center w-full text-left font-semibold text-rose-700 py-2"
-                    >
-                      <span className="flex items-center gap-2">
-                        <FaListUl /> Experiences ({trip.optional_experiences.length})
-                      </span>
-                      {expanded[trip._id]?.experiences ? (
-                        <FaChevronUp />
-                      ) : (
-                        <FaChevronDown />
-                      )}
-                    </button>
-                    <AnimatePresence>
-                      {expanded[trip._id]?.experiences && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="grid md:grid-cols-2 gap-3 mt-2"
-                        >
-                          {trip.optional_experiences.map((exp, i) => (
-                            <div
-                              key={i}
-                              className="bg-rose-50 rounded-xl p-3 border border-rose-100 text-sm"
-                            >
-                              <h4 className="font-semibold">{exp.name}</h4>
-                              <p>{exp.description}</p>
-                              <p className="text-xs text-gray-500">
-                                🏷️ {exp.category} | 💰 {exp.price_estimate}
-                              </p>
-                            </div>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  <CollapsibleSection
+                    trip={trip}
+                    expanded={expanded}
+                    toggleSection={toggleSection}
+                    section="experiences"
+                    title={`Experiences (${trip.optional_experiences.length})`}
+                    icon={<FaListUl />}
+                    color="rose"
+                    content={trip.optional_experiences.map((exp, i) => (
+                      <div
+                        key={i}
+                        className="bg-rose-50 rounded-xl p-3 border border-rose-100 text-sm"
+                      >
+                        <h4 className="font-semibold">{exp.name}</h4>
+                        <p>{exp.description}</p>
+                        <p className="text-xs text-gray-500">
+                          🏷️ {exp.category} | 💰 {exp.price_estimate}
+                        </p>
+                      </div>
+                    ))}
+                  />
                 )}
 
                 {/* Tips */}
                 {trip.travel_tips?.length > 0 && (
-                  <div className="mt-4">
-                    <button
-                      onClick={() => toggleSection(trip._id, "tips")}
-                      className="flex justify-between items-center w-full text-left font-semibold text-emerald-700 py-2"
-                    >
-                      <span className="flex items-center gap-2">
-                        <FaLightbulb /> Travel Tips ({trip.travel_tips.length})
-                      </span>
-                      {expanded[trip._id]?.tips ? <FaChevronUp /> : <FaChevronDown />}
-                    </button>
-                    <AnimatePresence>
-                      {expanded[trip._id]?.tips && (
-                        <motion.ul
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="list-disc list-inside text-sm text-gray-700 pl-3 space-y-1 mt-2"
-                        >
-                          {trip.travel_tips.map((tip, i) => (
-                            <li key={i}>{tip}</li>
-                          ))}
-                        </motion.ul>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  <CollapsibleSection
+                    trip={trip}
+                    expanded={expanded}
+                    toggleSection={toggleSection}
+                    section="tips"
+                    title={`Travel Tips (${trip.travel_tips.length})`}
+                    icon={<FaLightbulb />}
+                    color="emerald"
+                    content={trip.travel_tips.map((tip, i) => (
+                      <li key={i}>{tip}</li>
+                    ))}
+                    isList
+                  />
                 )}
 
                 {/* Itinerary */}
-                {trip.itinerary?.length > 0 && (
-                  <div className="mt-4">
-                    <button
-                      onClick={() => toggleSection(trip._id, "itinerary")}
-                      className="flex justify-between items-center w-full text-left font-semibold text-violet-700 py-2"
-                    >
-                      <span className="flex items-center gap-2">
-                        <FaClock /> Itinerary ({trip.itinerary.length})
-                      </span>
-                      {expanded[trip._id]?.itinerary ? (
-                        <FaChevronUp />
-                      ) : (
-                        <FaChevronDown />
-                      )}
-                    </button>
-                    <AnimatePresence>
-                      {expanded[trip._id]?.itinerary && (
-                        <motion.ul
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="list-decimal list-inside text-sm text-gray-700 pl-3 space-y-1 mt-2"
-                        >
-                          {trip.itinerary.map((day, i) => (
-                            <li key={i}>{day}</li>
+                {trip.itinerary && Object.keys(trip.itinerary).length > 0 && (
+                  <CollapsibleSection
+                    trip={trip}
+                    expanded={expanded}
+                    toggleSection={toggleSection}
+                    section="itinerary"
+                    title={`Itinerary (${Object.keys(trip.itinerary).length} days)`}
+                    icon={<FaClock />}
+                    color="violet"
+                    content={Object.entries(trip.itinerary).map(([day, activities], i) => (
+                      <div key={i}>
+                        <h4 className="font-semibold text-gray-800 mb-1">{day}</h4>
+                        <ul className="list-disc list-inside text-gray-700 text-sm pl-3">
+                          {activities.map((act, j) => (
+                            <li key={j}>{act.place_name || act}</li>
                           ))}
-                        </motion.ul>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                        </ul>
+                      </div>
+                    ))}
+                  />
                 )}
               </div>
             </div>
@@ -313,5 +278,43 @@ const SavedTrips = () => {
     </div>
   );
 };
+
+// 🔹 Collapsible Section Component
+const CollapsibleSection = ({
+  trip,
+  expanded,
+  toggleSection,
+  section,
+  title,
+  icon,
+  color,
+  content,
+  isList = false,
+}) => (
+  <div className="mt-4">
+    <button
+      onClick={() => toggleSection(trip._id, section)}
+      className={`flex justify-between items-center w-full text-left font-semibold text-${color}-700 py-2`}
+    >
+      <span className="flex items-center gap-2">
+        {icon} {title}
+      </span>
+      {expanded[trip._id]?.[section] ? <FaChevronUp /> : <FaChevronDown />}
+    </button>
+    <AnimatePresence>
+      {expanded[trip._id]?.[section] && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          className={`${isList ? "list-disc list-inside pl-3" : "grid md:grid-cols-2 gap-3 mt-2"}`}
+        >
+          {content}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+);
 
 export default SavedTrips;

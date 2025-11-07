@@ -12,6 +12,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import MemoryBoard from './components/MemoryBoard';
 import SavedTrips from './pages/SavedTrips';
+import GroupChat from './pages/GroupChat';
 
 // Separate wrapper to access useLocation inside Router
 const AppContent = () => {
@@ -34,6 +35,7 @@ const AppContent = () => {
         <Route path="/trip-map" element={<TripMap />} />
         <Route path="/memory-board" element={<MemoryBoard />} />
         <Route path="/saved-trips" element={<SavedTrips />} />
+        <Route path="/chat/:groupId" element={<GroupChat />} />
       </Routes>
 
       {/* ✅ Footer visible on all pages except login/register */}

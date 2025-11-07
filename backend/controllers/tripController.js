@@ -1,5 +1,6 @@
 
 import Trip from "../models/Trip.js";
+import ChatGroup from "../models/ChatGroup.js";
 
 export const saveTrip = async (req, res) => {
   try {
@@ -38,6 +39,24 @@ export const saveTrip = async (req, res) => {
     });
 
     await newTrip.save();
+
+      // Only auto-join solo travelers
+    let chatGroupId = null;
+    if (travelers && typeof travelers === "string" && travelers.toLowerCase().includes("solo")) {
+      let group = await ChatGroup.findOne({ location });
+
+      if (!group) {
+        group = await ChatGroup.create({ location, members: [userId] });
+      } else if (!group.members.some((m) => m.toString() === userId.toString())) {
+        group.members.push(userId);
+        await group.save();
+      }
+
+      chatGroupId = group._id;
+    }
+
+    // Optionally log
+    console.log("✅ Trip saved for user", userId.toString(), "location:", location, "chatGroupId:", chatGroupId);
 
     res.status(201).json({
       message: "Trip saved successfully",
