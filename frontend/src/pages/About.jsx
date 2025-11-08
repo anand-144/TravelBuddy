@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaGlobeAmericas, FaCompass, FaSmileBeam, FaUsers } from "react-icons/fa";
 
 const About = () => {
   return (
@@ -12,7 +11,7 @@ const About = () => {
         transition={{ duration: 0.6 }}
         className="text-5xl sm:text-6xl font-extrabold text-sky-700 text-center mb-6"
       >
-        About <span className="text-sky-500">TravelBuddy</span>
+        About <span className="text-sky-500">TravelBuddy🗼</span>
       </motion.h1>
 
       <motion.p
@@ -30,22 +29,22 @@ const About = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-5xl mt-10">
         {[
           {
-            icon: <FaCompass className="text-sky-600 text-4xl mb-3" />,
+            icon: <h1 className="text-4xl mb-3" >🧭</h1>,
             title: "Smart Trip Planning",
             desc: "AI-curated itineraries tailored to your preferences and travel style.",
           },
           {
-            icon: <FaGlobeAmericas className="text-sky-600 text-4xl mb-3" />,
+            icon: <h1 className="text-4xl mb-3" >🌍</h1>,
             title: "Explore Hidden Gems",
             desc: "Discover local experiences, attractions, and authentic adventures.",
           },
           {
-            icon: <FaSmileBeam className="text-sky-600 text-4xl mb-3" />,
+            icon: <h1 className="text-sky-600 text-4xl mb-3">😊</h1>,
             title: "Seamless Experience",
             desc: "From trip ideas to saved journeys — manage everything in one place.",
           },
           {
-            icon: <FaUsers className="text-sky-600 text-4xl mb-3" />,
+            icon: <h1 className="text-sky-600 text-4xl mb-3" >👥</h1>,
             title: "Connect & Share",
             desc: "Collaborate with friends and share memories from your travels.",
           },
@@ -97,7 +96,7 @@ const About = () => {
         </a>
       </motion.div>
     </div>
-  );
+  );  
 };
 
 export default About;
