@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     axios
-      .get("http://localhost:5000/api/auth/profile", {
+      .get(`${import.meta.env.VITE_API_URL}/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   // ✅ Email signup
   const signUp = async (email, password, fullName) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
         email,
         password,
         fullName,
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
   // ✅ Email login
   const signIn = async (email, password) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
         email,
         password,
       });
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   const signInWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const res = await axios.post("http://localhost:5000/api/auth/google", {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
           credential: tokenResponse.access_token,
         });
 

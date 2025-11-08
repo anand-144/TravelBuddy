@@ -12,7 +12,7 @@ const MemoryBoard = () => {
 
   const fetchMemories = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/memories");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/memories`);
       setMemories(res.data);
     } catch (error) {
       console.error("Error fetching memories:", error);
@@ -42,7 +42,7 @@ const MemoryBoard = () => {
       formData.append("note", note);
       if (file) formData.append("file", file);
 
-      const res = await axios.post("http://localhost:5000/api/memories", formData, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/memories`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -61,7 +61,7 @@ const MemoryBoard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/memories/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/memories/${id}`);
       setMemories(memories.filter((m) => m._id !== id));
       toast.success("Memory deleted!");
     } catch (error) {

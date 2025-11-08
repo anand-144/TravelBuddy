@@ -71,7 +71,7 @@ const TripResult = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/trips/save",
+        `${import.meta.env.VITE_API_URL}/trips/save`,
         {
           location: tripData.location,
           duration: tripData.duration,

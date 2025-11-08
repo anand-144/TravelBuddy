@@ -23,7 +23,7 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", formData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, formData);
       localStorage.setItem("token", res.data.token);
       toast.success("Registration successful!");
       navigate("/");
@@ -37,7 +37,7 @@ const Register = () => {
   // ---------- Google Register/Login ----------
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/google", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
         credential: credentialResponse.credential,
       });
       localStorage.setItem("token", res.data.token);

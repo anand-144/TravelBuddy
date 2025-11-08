@@ -34,7 +34,7 @@ const SavedTrips = () => {
   const fetchTrips = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/trips/my-trips", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/trips/my-trips`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTrips(res.data);
@@ -57,7 +57,7 @@ const SavedTrips = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/trips/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/trips/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Trip deleted!");
@@ -71,7 +71,7 @@ const SavedTrips = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        `http://localhost:5000/api/chat/location/${encodeURIComponent(location)}`,
+        `${import.meta.env.VITE_API_URL}/chat/location/${encodeURIComponent(location)}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       navigate(`/chat/${res.data._id}`);

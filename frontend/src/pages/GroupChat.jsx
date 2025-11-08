@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-const SOCKET_URL = "http://localhost:5000";
+const SOCKET_URL = `${import.meta.env.VITE_SOCKET_URL}`;
 const socket = io(SOCKET_URL, { autoConnect: false });
 
 const GroupChat = () => {
@@ -24,7 +24,7 @@ const GroupChat = () => {
 
     const fetchGroup = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/chat/${groupId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/chat/${groupId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setGroup(res.data);

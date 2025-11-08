@@ -18,15 +18,22 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+// ✅ Use environment variable for client origin
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+
 // ✅ Setup Socket.IO
 const io = new IOServer(server, {
-  cors: { origin: "http://localhost:5173", credentials: true },
+  cors: {
+    origin: CLIENT_ORIGIN,
+    credentials: true,
+  },
 });
 
+// ✅ Connect Database
 connectDB();
 
 // ✅ Middleware
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
 app.use(express.json());
 
 // ✅ Routes
@@ -46,19 +53,19 @@ io.on("connection", (socket) => {
     console.log(`${socket.id} joined group ${groupId}`);
   });
 
-socket.on("sendMessage", async ({ groupId, senderId, content }) => {
-  const msg = { sender: senderId, content, timestamp: new Date() };
-  
-  // Emit to all users in group (including sender)
-  io.to(groupId).emit("receiveMessage", msg);
+  socket.on("sendMessage", async ({ groupId, senderId, content }) => {
+    const msg = { sender: senderId, content, timestamp: new Date() };
 
-  // Save message to DB
-  try {
-    await ChatGroup.findByIdAndUpdate(groupId, { $push: { messages: msg } });
-  } catch (err) {
-    console.error("Error saving message:", err);
-  }
-});
+    // Emit to all users in group (including sender)
+    io.to(groupId).emit("receiveMessage", msg);
+
+    // Save message to DB
+    try {
+      await ChatGroup.findByIdAndUpdate(groupId, { $push: { messages: msg } });
+    } catch (err) {
+      console.error("❌ Error saving message:", err);
+    }
+  });
 
   socket.on("disconnect", () => {
     console.log("❌ Socket disconnected:", socket.id);
@@ -67,4 +74,6 @@ socket.on("sendMessage", async ({ groupId, senderId, content }) => {
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () =>
+  console.log(`🚀 Server running on port ${PORT}`)
+);
