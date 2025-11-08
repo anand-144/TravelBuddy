@@ -4,14 +4,13 @@ import { motion } from "framer-motion";
 const About = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex flex-col items-center justify-center py-16 px-6 sm:px-16 lg:px-40">
-      {/* Header Section */}
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="text-5xl sm:text-6xl font-extrabold text-sky-700 text-center mb-6"
       >
-        About <span className="text-sky-500">TravelBuddy🗼</span>
+        About <span className="text-sky-500">TravelBuddy</span>
       </motion.h1>
 
       <motion.p
@@ -22,19 +21,18 @@ const About = () => {
       >
         Your trusted AI-powered companion for exploring the world effortlessly.
         Whether you're chasing adventures, planning relaxing getaways, or
-        exploring new cultures — <span className="font-semibold text-sky-600">TravelBuddy</span> helps you do it smarter, faster, and stress-free. 🌍✨
+        exploring new cultures — <span className="font-semibold text-sky-600">TravelBuddy</span> helps you do it smarter, faster, and stress-free.
       </motion.p>
 
-      {/* Feature Highlights */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-5xl mt-10">
         {[
           {
-            icon: <h1 className="text-4xl mb-3" >🧭</h1>,
+            icon: <h1 className="text-4xl mb-3">🧭</h1>,
             title: "Smart Trip Planning",
             desc: "AI-curated itineraries tailored to your preferences and travel style.",
           },
           {
-            icon: <h1 className="text-4xl mb-3" >🌍</h1>,
+            icon: <h1 className="text-4xl mb-3">🌍</h1>,
             title: "Explore Hidden Gems",
             desc: "Discover local experiences, attractions, and authentic adventures.",
           },
@@ -44,7 +42,7 @@ const About = () => {
             desc: "From trip ideas to saved journeys — manage everything in one place.",
           },
           {
-            icon: <h1 className="text-sky-600 text-4xl mb-3" >👥</h1>,
+            icon: <h1 className="text-sky-600 text-4xl mb-3">👥</h1>,
             title: "Connect & Share",
             desc: "Collaborate with friends and share memories from your travels.",
           },
@@ -63,7 +61,6 @@ const About = () => {
         ))}
       </div>
 
-      {/* Mission Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -71,7 +68,7 @@ const About = () => {
         className="max-w-3xl text-center mt-16"
       >
         <h2 className="text-3xl sm:text-4xl font-bold text-sky-700 mb-4">
-          Our Mission 🌏
+          Our Mission
         </h2>
         <p className="text-gray-700 text-lg leading-relaxed">
           At <span className="font-semibold text-sky-600">TravelBuddy</span>, our mission is to make travel planning
@@ -81,7 +78,6 @@ const About = () => {
         </p>
       </motion.div>
 
-      {/* Call to Action */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -96,7 +92,7 @@ const About = () => {
         </a>
       </motion.div>
     </div>
-  );  
+  );
 };
 
 export default About;

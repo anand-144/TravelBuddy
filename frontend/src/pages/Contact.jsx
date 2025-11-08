@@ -34,12 +34,12 @@ const Contact = () => {
       )
       .then(
         () => {
-          alert("✅ Your message has been sent successfully!");
+          alert("Your message has been sent successfully!");
           setForm({ from_name: "", from_email: "", subject: "", message: "" });
           setLoading(false);
         },
         (error) => {
-          console.error("❌ Email send error:", error);
+          console.error("Email send error:", error);
           alert("Something went wrong. Please try again later.");
           setLoading(false);
         }
@@ -49,11 +49,9 @@ const Contact = () => {
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-blue-50 via-sky-100 to-white flex flex-col items-center justify-center py-20 px-6 sm:px-16 lg:px-40 overflow-hidden">
 
-      {/* 🌎 Animated Background Orbs */}
       <div className="absolute -top-40 -left-32 w-96 h-96 bg-sky-400/30 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }}></div>
 
-      {/* 🧭 Page Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -61,15 +59,14 @@ const Contact = () => {
         className="text-center mb-12 z-10"
       >
         <h1 className="text-5xl sm:text-6xl font-extrabold text-sky-700 mb-4">
-          Get in Touch ✉️
+          Get in Touch
         </h1>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Have questions, feedback, or ideas? We’d love to hear from you!  
+          Have questions, feedback, or ideas? We'd love to hear from you!
           Fill out the form below and our team will get back to you soon.
         </p>
       </motion.div>
 
-      {/* 📩 Contact Form */}
       <motion.form
         onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 30 }}
@@ -77,12 +74,10 @@ const Contact = () => {
         transition={{ duration: 0.7 }}
         className="relative bg-white/80 backdrop-blur-2xl shadow-2xl border border-white/30 rounded-3xl p-8 sm:p-12 w-full max-w-2xl z-10"
       >
-        {/* Floating Accent Icon */}
         <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-sky-500 to-blue-600 p-4 rounded-full shadow-lg">
           <FaPaperPlane className="text-white text-2xl" />
         </div>
 
-        {/* Input Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
           <div>
             <label className="block text-gray-700 font-medium mb-2 text-left">Your Name</label>
@@ -137,7 +132,6 @@ const Contact = () => {
           ></textarea>
         </div>
 
-        {/* Submit Button */}
         <motion.button
           type="submit"
           whileHover={{ scale: 1.05 }}
@@ -152,7 +146,6 @@ const Contact = () => {
         </motion.button>
       </motion.form>
 
-      {/* 🌍 Contact Info Footer */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}

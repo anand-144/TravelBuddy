@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaPlus, FaTrash, FaCloudUploadAlt } from "react-icons/fa";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const MemoryBoard = () => {
   const [memories, setMemories] = useState([]);
@@ -10,7 +10,6 @@ const MemoryBoard = () => {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch all memories
   const fetchMemories = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/memories");
@@ -21,7 +20,6 @@ const MemoryBoard = () => {
     }
   };
 
-  // Handle file selection + preview
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (selected) {
@@ -30,7 +28,6 @@ const MemoryBoard = () => {
     }
   };
 
-  // Upload new memory
   const handleUpload = async (e) => {
     e.preventDefault();
 
@@ -62,7 +59,6 @@ const MemoryBoard = () => {
     }
   };
 
-  // Delete memory
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/memories/${id}`);
@@ -79,13 +75,12 @@ const MemoryBoard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-6 sm:px-12 md:px-24">
+    <div className="min-h-screen bg-gray-100 py-10 px-6 sm:px-12 md:px-24">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8 text-blue-600">
-          📸 Memory Board
+          Memory Board
         </h1>
 
-        {/* Upload form */}
         <form
           onSubmit={handleUpload}
           className="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-10"
@@ -105,7 +100,6 @@ const MemoryBoard = () => {
                 onChange={handleFileChange}
                 className="block text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100"
               />
-              {/* ✅ Image Preview */}
               {preview && (
                 <img
                   src={preview}
@@ -126,7 +120,6 @@ const MemoryBoard = () => {
           </div>
         </form>
 
-        {/* Display Memories */}
         {memories.length === 0 ? (
           <p className="text-gray-500 text-center">No memories yet. Add one!</p>
         ) : (

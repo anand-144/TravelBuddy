@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const SOCKET_URL = "http://localhost:5000";
 const socket = io(SOCKET_URL, { autoConnect: false });
@@ -16,7 +16,7 @@ const GroupChat = () => {
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
-  const userName = localStorage.getItem("userName"); // optional
+  const userName = localStorage.getItem("userName");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
