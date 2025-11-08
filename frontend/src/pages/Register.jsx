@@ -41,7 +41,7 @@ const Register = () => {
         credential: credentialResponse.credential,
       });
       localStorage.setItem("token", res.data.token);
-      toast.success(`Welcome, ${res.data.user.fullName}`);
+      toast.success(`Welcome, ${res.data.user.fullName}  please refresh the page`);
       navigate("/");
     } catch (error) {
       toast.error("Google sign-in failed");

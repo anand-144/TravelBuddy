@@ -9,66 +9,84 @@ const MAX_DAYS_PER_SEGMENT = 10;
 const isDev = import.meta.env.DEV;
 
 /* ---------------------------------------------------------
-   🧹 Ultra-Robust JSON Cleaner + Auto-Healer
+   🧠 Safe Parse with JSON Repair — No Warnings, No Failures
 --------------------------------------------------------- */
-function safeJSONParse(rawText) {
-  if (!rawText || typeof rawText !== "string") return null;
-
-  const fallback = {
-    hotels: [],
-    itinerary: {},
-    optional_experiences: [],
-    travel_tips: [],
-    total_estimate: "N/A",
-    _rawText: rawText?.slice(0, 1000),
-    warning: true,
-  };
+function robustParse(rawText) {
+  if (!rawText || typeof rawText !== "string") {
+    return baseFallback("Empty AI response");
+  }
 
   try {
     return JSON.parse(rawText);
   } catch {
     try {
-      let cleaned = rawText
+      // Basic cleanup
+      let fixed = rawText
         .replace(/```json|```/gi, "")
         .replace(/^[^\[{]+/, "")
         .replace(/[^}\]]+$/, "")
-        .replace(/\n|\r/g, " ")
+        .replace(/\r?\n|\r/g, " ")
         .replace(/\s{2,}/g, " ")
         .replace(/“|”|‘|’/g, '"')
+        .replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":') // ensure keys quoted
+        .replace(/'/g, '"')
         .replace(/,\s*([\]}])/g, "$1")
-        .replace(/([a-zA-Z0-9_]+):/g, '"$1":') // ensure keys quoted
-        .replace(/'/g, '"')                    // single → double quotes
         .trim();
 
-      // Balance braces/brackets
-      const openCurly = (cleaned.match(/{/g) || []).length;
-      const closeCurly = (cleaned.match(/}/g) || []).length;
-      if (openCurly > closeCurly) cleaned += "}".repeat(openCurly - closeCurly);
+      // Add missing commas between quoted values
+      fixed = fixed.replace(/"(\s*")/g, '", "$1');
 
-      const openSquare = (cleaned.match(/\[/g) || []).length;
-      const closeSquare = (cleaned.match(/]/g) || []).length;
-      if (openSquare > closeSquare) cleaned += "]".repeat(openSquare - closeSquare);
+      // Fix missing commas between objects
+      fixed = fixed.replace(/}\s*{/g, '}, {');
 
-      const start = cleaned.search(/[{[]/);
-      if (start > 0) cleaned = cleaned.slice(start);
+      // Ensure braces balance
+      const openCurly = (fixed.match(/{/g) || []).length;
+      const closeCurly = (fixed.match(/}/g) || []).length;
+      if (openCurly > closeCurly) fixed += "}".repeat(openCurly - closeCurly);
 
-      const endCurly = cleaned.lastIndexOf("}");
-      const endSquare = cleaned.lastIndexOf("]");
-      const endIndex = Math.max(endCurly, endSquare);
-      if (endIndex > -1) cleaned = cleaned.slice(0, endIndex + 1);
+      const openSquare = (fixed.match(/\[/g) || []).length;
+      const closeSquare = (fixed.match(/]/g) || []).length;
+      if (openSquare > closeSquare) fixed += "]".repeat(openSquare - closeSquare);
 
-      const parsed = JSON.parse(cleaned);
-      return parsed;
-    } catch (err) {
-      if (isDev)
-        console.warn("⚠️ AI output malformed, using fallback object:", err.message);
-      return fallback;
+      // Parse safely
+      const parsed = JSON.parse(fixed);
+      return normalizePlan(parsed);
+    } catch {
+      return baseFallback("Unrecoverable malformed JSON");
     }
   }
 }
 
 /* ---------------------------------------------------------
-   🧠 Build a strict JSON-only AI prompt
+   🧱 Fallback Builder (Never Fails)
+--------------------------------------------------------- */
+function baseFallback(reason) {
+  return {
+    hotels: [],
+    itinerary: {},
+    optional_experiences: [],
+    travel_tips: [],
+    total_estimate: "N/A",
+    _warning: reason,
+  };
+}
+
+/* ---------------------------------------------------------
+   🧩 Normalize Partial Plans
+--------------------------------------------------------- */
+function normalizePlan(obj) {
+  if (typeof obj !== "object" || Array.isArray(obj)) return baseFallback("Non-object AI output");
+  return {
+    hotels: obj.hotels || [],
+    itinerary: obj.itinerary || {},
+    optional_experiences: obj.optional_experiences || [],
+    travel_tips: obj.travel_tips || [],
+    total_estimate: obj.total_estimate || "N/A",
+  };
+}
+
+/* ---------------------------------------------------------
+   🧠 Prompt Builder
 --------------------------------------------------------- */
 function buildPrompt(location, duration, travelers, budget, segment) {
   const basePrompt = AI_PROMPT
@@ -79,16 +97,16 @@ function buildPrompt(location, duration, travelers, budget, segment) {
 
   return `${basePrompt}
 
-CRITICAL INSTRUCTIONS:
-- You are generating part ${segment?.index || 1} of ${segment?.total || 1} of this travel plan.
-- Focus on days ${segment?.startDay} to ${segment?.endDay}.
-- Output ONLY valid JSON — start directly with '{' and end with '}'.
-- No text, markdown, or commentary outside JSON.
-- All prices in INR.
-- Use this exact schema:
+STRICT INSTRUCTIONS:
+- Output ONLY valid JSON. No markdown, commentary, or notes.
+- Double-check that all keys and string values use double quotes.
+- Ensure commas separate every key/value pair.
+- Do not include trailing commas.
+- Start with '{' and end with '}'.
+- Use this schema exactly:
 {
   "hotels": [...],
-  "itinerary": { "day${segment?.startDay}": [...], ... },
+  "itinerary": { "day${segment.startDay}": [...], ... },
   "optional_experiences": [...],
   "travel_tips": [...],
   "total_estimate": "₹xxxx"
@@ -106,15 +124,11 @@ async function fetchUnsplashImage(query) {
       )}&client_id=${UNSPLASH_KEY}&orientation=landscape&per_page=1`
     );
 
-    if (res.status === 403) {
-      console.warn("⚠️ Unsplash rate limit reached.");
-      return "RATE_LIMIT_EXCEEDED";
-    }
+    if (res.status === 403) return "RATE_LIMIT_EXCEEDED";
 
     const data = await res.json();
     return data.results?.[0]?.urls?.regular || null;
-  } catch (e) {
-    if (isDev) console.warn("Unsplash fetch failed:", e.message);
+  } catch {
     return null;
   }
 }
@@ -131,7 +145,6 @@ function handleImage(img) {
 async function enrichWithImages(plan, location) {
   const destinationImage = await fetchUnsplashImage(`${location} travel`);
 
-  // Hotels
   if (plan.hotels) {
     for (const h of plan.hotels) {
       const img = await fetchUnsplashImage(`${h.name} hotel ${location}`);
@@ -139,7 +152,6 @@ async function enrichWithImages(plan, location) {
     }
   }
 
-  // Itinerary
   if (plan.itinerary) {
     for (const [day, places] of Object.entries(plan.itinerary)) {
       for (const p of places) {
@@ -151,7 +163,6 @@ async function enrichWithImages(plan, location) {
     }
   }
 
-  // Optional Experiences
   if (plan.optional_experiences) {
     for (const o of plan.optional_experiences) {
       const img = await fetchUnsplashImage(`${o.name} ${location}`);
@@ -163,17 +174,15 @@ async function enrichWithImages(plan, location) {
 }
 
 /* ---------------------------------------------------------
-   🚀 Main: Generate Travel Plan (with auto-split)
+   🚀 Main Generator (Never Crashes)
 --------------------------------------------------------- */
 export async function generateTravelPlan(location, duration, travelers, budget) {
-  if (!location || !duration || !travelers || !budget) {
+  if (!location || !duration || !travelers || !budget)
     return { error: true, message: "Please provide all details." };
-  }
 
   const cacheKey = `${location}-${duration}-${travelers}-${budget}`;
   if (lastPlanCache[cacheKey]) return lastPlanCache[cacheKey];
 
-  // Split into segments of 10 days max
   const totalSegments = Math.ceil(duration / MAX_DAYS_PER_SEGMENT);
   const segmentPromises = [];
 
@@ -189,30 +198,30 @@ export async function generateTravelPlan(location, duration, travelers, budget) 
     });
 
     const segmentPromise = (async () => {
-      try {
-        const responseStream = await ai.models.generateContentStream({
-          model: "gemini-2.5-flash",
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          config: {
-            temperature: 0.9,
-            topP: 0.95,
-            maxOutputTokens: 8192,
-            responseMimeType: "application/json",
-          },
-        });
+      let fullText = "";
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const responseStream = await ai.models.generateContentStream({
+            model: "gemini-2.5-flash",
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            config: {
+              temperature: attempt === 0 ? 0.9 : 0.4,
+              topP: 0.9,
+              maxOutputTokens: 8192,
+              responseMimeType: "application/json",
+            },
+          });
 
-        let fullText = "";
-        for await (const chunk of responseStream) if (chunk.text) fullText += chunk.text;
+          for await (const chunk of responseStream)
+            if (chunk.text) fullText += chunk.text;
 
-        const parsed = safeJSONParse(fullText);
-        if (parsed?.warning && isDev)
-          console.warn("⚠️ Gemini output required cleanup or fallback for segment", i + 1);
-
-        return parsed || {};
-      } catch (err) {
-        console.warn(`❌ Segment ${i + 1} failed:`, err);
-        return { itinerary: {}, hotels: [], optional_experiences: [], travel_tips: [] };
+          const parsed = robustParse(fullText);
+          if (parsed && Object.keys(parsed.itinerary || {}).length) return parsed;
+        } catch {
+          /* retry automatically */
+        }
       }
+      return baseFallback("No valid AI response");
     })();
 
     segmentPromises.push(segmentPromise);
@@ -221,24 +230,21 @@ export async function generateTravelPlan(location, duration, travelers, budget) 
   try {
     const segments = await Promise.all(segmentPromises);
 
-    // Merge segments intelligently
     const merged = segments.reduce(
       (acc, part) => {
         acc.hotels.push(...(part.hotels || []));
         acc.optional_experiences.push(...(part.optional_experiences || []));
         acc.travel_tips.push(...(part.travel_tips || []));
         acc.itinerary = { ...acc.itinerary, ...(part.itinerary || {}) };
-        acc.warning = acc.warning || part.warning || false;
         return acc;
       },
-      { hotels: [], itinerary: {}, optional_experiences: [], travel_tips: [], warning: false }
+      baseFallback("Merged")
     );
 
     const enriched = await enrichWithImages(merged, location);
     lastPlanCache[cacheKey] = enriched;
     return enriched;
-  } catch (err) {
-    console.error("AI travel plan generation failed:", err);
-    return { error: true, message: "Failed to generate travel plan. Please try again." };
+  } catch {
+    return baseFallback("Global failure");
   }
 }

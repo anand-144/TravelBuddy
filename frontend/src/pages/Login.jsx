@@ -27,7 +27,7 @@ const Login = () => {
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", formData);
       localStorage.setItem("token", res.data.token);
-      toast.success(`Welcome back, ${res.data.user.fullName}`);
+      toast.success(`Welcome back, ${res.data.user.fullName} please refresh the page`);
       navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
@@ -42,7 +42,7 @@ const Login = () => {
         credential: credentialResponse.credential,
       });
       localStorage.setItem("token", res.data.token);
-      toast.success(`Welcome, ${res.data.user.fullName}`);
+      toast.success(`Welcome, ${res.data.user.fullName} please refresh the page`);
       navigate("/");
     } catch {
       toast.error("Google sign-in failed");
