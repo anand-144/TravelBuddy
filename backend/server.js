@@ -19,7 +19,7 @@ const app = express();
 const server = http.createServer(app);
 
 // ✅ Use environment variable for client origin
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173" || " https://travel-buddy-mu-eight.vercel.app";
 
 // ✅ Setup Socket.IO
 const io = new IOServer(server, {
