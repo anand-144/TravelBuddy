@@ -30,22 +30,20 @@ const SavedTrips = () => {
       [tripId]: { ...prev[tripId], [section]: !prev[tripId]?.[section] },
     }));
   };
+const fetchTrips = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/trips/my-trips`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setTrips(res.data);
+  } catch (err) {
+    toast.error("Failed to load saved trips");
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const fetchTrips = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/trips/my-trips`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setTrips(res.data);
-      console.log("✅ Fetched Saved Trips:", res.data);
-    } catch (err) {
-      console.error("❌ Error fetching trips:", err);
-      toast.error("Failed to load saved trips");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchTrips();

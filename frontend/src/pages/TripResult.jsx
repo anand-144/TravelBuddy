@@ -98,7 +98,6 @@ const TripResult = () => {
       navigate(`/chat/${chatGroupId}`);
     }
   } catch (err) {
-    console.error("❌ Save trip failed:", err);
     toast.error("Failed to save trip");
   }
 };

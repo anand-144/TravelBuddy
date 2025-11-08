@@ -9,16 +9,6 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    if (user) {
-      console.log("🧑‍💻 Logged in user data:", {
-        name: user.full_name || user.name,
-        email: user.email,
-        avatar: user?.raw?.avatar_url || user.picture,
-        raw: user,
-      });
-    }
-  }, [user]);
 
   // Close dropdown when clicked outside
   useEffect(() => {

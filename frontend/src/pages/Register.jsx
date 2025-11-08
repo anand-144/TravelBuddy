@@ -44,8 +44,7 @@ const Register = () => {
       toast.success(`Welcome, ${res.data.user.fullName}  please refresh the page`);
       navigate("/");
     } catch (error) {
-      toast.error("Google sign-in failed");
-      console.error(error);
+      toast.error("Google sign-in failed" , error);
     }
   };
 

@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { FaArrowLeft, FaHotel, FaMapMarkerAlt } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const RecenterMap = ({ coords }) => {
   const map = useMap();
@@ -27,23 +28,24 @@ const TripMap = () => {
       return;
     }
 
-    const fetchCoordinates = async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`
-        );
-        const data = await res.json();
+const fetchCoordinates = async () => {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`
+    );
+    const data = await res.json();
 
-        if (data && data.length > 0) {
-          const { lat, lon } = data[0];
-          setCityCoords([parseFloat(lat), parseFloat(lon)]);
-        }
-      } catch (err) {
-        console.error('Geocoding error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (data && data.length > 0) {
+      const { lat, lon } = data[0];
+      setCityCoords([parseFloat(lat), parseFloat(lon)]);
+    }
+  } catch {
+    toast.error("Failed to fetch city coordinates");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     fetchCoordinates();
   }, [city, navigate]);

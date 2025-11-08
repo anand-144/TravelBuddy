@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import emailjs from "emailjs-com";
 import { motion } from "framer-motion";
 import { FaPaperPlane, FaMapMarkedAlt, FaEnvelopeOpenText, FaPhoneAlt } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -34,12 +35,12 @@ const Contact = () => {
       )
       .then(
         () => {
-          alert("Your message has been sent successfully!");
+          toast.success("Your message has been sent successfully!");
           setForm({ from_name: "", from_email: "", subject: "", message: "" });
           setLoading(false);
         },
         (error) => {
-          console.error("Email send error:", error);
+          toast.error("Email send error:", error);
           alert("Something went wrong. Please try again later.");
           setLoading(false);
         }

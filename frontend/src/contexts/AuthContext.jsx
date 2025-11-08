@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
+import toast from "react-hot-toast";
 
 const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
@@ -85,11 +86,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("userId", user._id); // 🔹 ADD THIS
         setUser(user);
       } catch (err) {
-        console.error("Google login failed:", err);
+        toast.error("Google login failed:", err);
       }
     },
     onError: () => {
-      console.error("Google login failed");
+      toast.error("Google login failed");
     },
   });
 

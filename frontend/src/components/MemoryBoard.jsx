@@ -15,8 +15,7 @@ const MemoryBoard = () => {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/memories`);
       setMemories(res.data);
     } catch (error) {
-      console.error("Error fetching memories:", error);
-      toast.error("Failed to load memories");
+      toast.error("Failed to load memories" ,error);
     }
   };
 
@@ -52,8 +51,7 @@ const MemoryBoard = () => {
       setPreview(null);
       toast.success("Memory added!");
     } catch (error) {
-      console.error("Error uploading memory:", error);
-      toast.error("Failed to upload memory");
+      toast.error("Failed to upload memory" , error);
     } finally {
       setLoading(false);
     }
@@ -65,8 +63,7 @@ const MemoryBoard = () => {
       setMemories(memories.filter((m) => m._id !== id));
       toast.success("Memory deleted!");
     } catch (error) {
-      console.error("Error deleting memory:", error);
-      toast.error("Failed to delete memory");
+      toast.error("Failed to delete memory" , error);
     }
   };
 

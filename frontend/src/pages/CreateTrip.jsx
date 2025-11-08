@@ -26,10 +26,6 @@ const CreateTrip = () => {
     }));
   };
 
-  useEffect(() => {
-    console.log("Form data:", formData);
-  }, [formData]);
-
   // Redirect to login if not logged in (after AuthContext finishes loading)
   useEffect(() => {
     if (!loading && !user) {
