@@ -1,4 +1,3 @@
-// frontend/src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -11,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Load user profile on refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -27,14 +25,13 @@ export const AuthProvider = ({ children }) => {
         const userData = res.data.user || res.data;
         setUser(userData);
 
-        // ✅ Also ensure userId stays in localStorage
         if (userData?._id) localStorage.setItem("userId", userData._id);
       })
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
 
-  // ✅ Email signup
+
   const signUp = async (email, password, fullName) => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
@@ -45,7 +42,7 @@ export const AuthProvider = ({ children }) => {
 
       const { token, user } = res.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("userId", user._id); // 🔹 ADD THIS
+      localStorage.setItem("userId", user._id);
       setUser(user);
 
       return { data: res.data };
@@ -54,7 +51,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Email login
   const signIn = async (email, password) => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
@@ -64,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
       const { token, user } = res.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("userId", user._id); // 🔹 ADD THIS
+      localStorage.setItem("userId", user._id); 
       setUser(user);
 
       return { data: res.data };
@@ -73,7 +69,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Google login
+
   const signInWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
@@ -94,10 +90,10 @@ export const AuthProvider = ({ children }) => {
     },
   });
 
-  // ✅ Logout
+
   const signOut = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userId"); // 🔹 ALSO CLEAR THIS
+    localStorage.removeItem("userId");
     setUser(null);
   };
 

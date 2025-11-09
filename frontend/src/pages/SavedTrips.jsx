@@ -277,7 +277,6 @@ const fetchTrips = async () => {
   );
 };
 
-// 🔹 Collapsible Section Component
 const CollapsibleSection = ({
   trip,
   expanded,

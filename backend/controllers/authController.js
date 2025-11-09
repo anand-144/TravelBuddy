@@ -9,7 +9,6 @@ const generateToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-// ---------- Email Register ----------
 export const registerUser = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
@@ -27,7 +26,6 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// ---------- Email Login ----------
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -44,7 +42,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// ---------- Google Login/Register ----------
 export const googleAuth = async (req, res) => {
   try {
     const { credential } = req.body;
@@ -59,7 +56,6 @@ export const googleAuth = async (req, res) => {
 
     let user = await User.findOne({ email });
     if (!user) {
-      // ✅ Auto-generate fallback avatar if Google doesn’t provide one
       const fallbackAvatar = picture
         ? picture
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -82,7 +78,6 @@ export const googleAuth = async (req, res) => {
   }
 };
 
-// ---------- Get User Profile ----------
 export const getProfile = async (req, res) => {
   try {
     if (!req.user) {

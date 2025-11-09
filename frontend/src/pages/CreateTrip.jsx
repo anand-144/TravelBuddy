@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Autocomplete from "react-google-autocomplete";
 import { SelectBudgetOptions, SelectTravelersList } from "../components/Options";
 import { FaGlobeAsia } from "react-icons/fa";
-import { useAuth } from "../contexts/AuthContext"; // ✅ use global auth context
+import { useAuth } from "../contexts/AuthContext";
 
 const CreateTrip = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth(); // ✅ access user and loading state
+  const { user, loading } = useAuth(); 
 
   const [formData, setFormData] = useState({
     location: "",
@@ -26,7 +26,6 @@ const CreateTrip = () => {
     }));
   };
 
-  // Redirect to login if not logged in (after AuthContext finishes loading)
   useEffect(() => {
     if (!loading && !user) {
       navigate("/login");

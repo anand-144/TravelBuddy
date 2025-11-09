@@ -1,6 +1,5 @@
 import ChatGroup from "../models/ChatGroup.js";
 
-// Get group by location
 export const getGroupByLocation = async (req, res) => {
   try {
     const { location } = req.params;
@@ -13,7 +12,6 @@ export const getGroupByLocation = async (req, res) => {
   }
 };
 
-// Get group by ID
 export const getGroupById = async (req, res) => {
   try {
     const { id } = req.params;

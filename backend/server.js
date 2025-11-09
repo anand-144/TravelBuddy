@@ -1,4 +1,3 @@
-// backend/server.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -18,10 +17,8 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Use environment variable for client origin
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173" || " https://travel-buddy-mu-eight.vercel.app";
 
-// ✅ Setup Socket.IO
 const io = new IOServer(server, {
   cors: {
     origin: CLIENT_ORIGIN,
@@ -29,14 +26,11 @@ const io = new IOServer(server, {
   },
 });
 
-// ✅ Connect Database
 connectDB();
 
-// ✅ Middleware
 app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
 app.use(express.json());
 
-// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/memories", memoryRoutes);
 app.use("/api/trips", tripRoutes);
@@ -44,7 +38,6 @@ app.use("/api/chat", chatRoutes);
 
 app.get("/", (req, res) => res.send("✅ API Running"));
 
-// ✅ Socket.IO Chat Logic
 io.on("connection", (socket) => {
   console.log("🔌 Socket connected:", socket.id);
 
@@ -56,10 +49,8 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", async ({ groupId, senderId, content }) => {
     const msg = { sender: senderId, content, timestamp: new Date() };
 
-    // Emit to all users in group (including sender)
     io.to(groupId).emit("receiveMessage", msg);
 
-    // Save message to DB
     try {
       await ChatGroup.findByIdAndUpdate(groupId, { $push: { messages: msg } });
     } catch (err) {
@@ -72,7 +63,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () =>
   console.log(`🚀 Server running on port ${PORT}`)

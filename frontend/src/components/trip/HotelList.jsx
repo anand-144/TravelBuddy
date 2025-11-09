@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const HotelList = ({ hotels, renderPrice }) => {
   if (!hotels?.length) return null;
 
-  // Detect rate limit
+
   const isRateLimitExceeded = hotels.some(
     (h) =>
       !h.image_url ||
@@ -12,7 +12,6 @@ const HotelList = ({ hotels, renderPrice }) => {
         h.image_url.toLowerCase().includes("api rate limit"))
   );
 
-  // 🩵 Fun fallback display
   if (isRateLimitExceeded) {
     return (
       <section className="mb-20 text-center">
@@ -25,7 +24,6 @@ const HotelList = ({ hotels, renderPrice }) => {
           </h2>
         </div>
 
-        {/* Illustration / placeholder grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
           {[...Array(3)].map((_, i) => (
             <motion.div
@@ -60,7 +58,7 @@ const HotelList = ({ hotels, renderPrice }) => {
     );
   }
 
-  // ✅ Normal hotel list
+
   return (
     <section className="mb-16">
       <div className="flex items-center gap-3 mb-6">

@@ -40,7 +40,6 @@ export const saveTrip = async (req, res) => {
 
     await newTrip.save();
 
-      // Only auto-join solo travelers
     let chatGroupId = null;
     if (travelers && typeof travelers === "string" && travelers.toLowerCase().includes("solo")) {
       let group = await ChatGroup.findOne({ location });
@@ -55,7 +54,6 @@ export const saveTrip = async (req, res) => {
       chatGroupId = group._id;
     }
 
-    // Optionally log
     console.log("✅ Trip saved for user", userId.toString(), "location:", location, "chatGroupId:", chatGroupId);
 
     res.status(201).json({
@@ -68,8 +66,6 @@ export const saveTrip = async (req, res) => {
   }
 };
 
-
-// ---------- Get All Saved Trips ----------
 export const getUserTrips = async (req, res) => {
   try {
     const trips = await Trip.find({ user: req.user._id }).sort({ createdAt: -1 });
@@ -79,8 +75,6 @@ export const getUserTrips = async (req, res) => {
   }
 };
 
-
-// ---------- Delete Saved Trip ----------
 export const deleteTrip = async (req, res) => {
   try {
     const userId = req.user._id;

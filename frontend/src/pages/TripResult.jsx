@@ -20,7 +20,6 @@ const TripResult = () => {
   const [loading, setLoading] = useState(true);
   const [aiResult, setAiResult] = useState(null);
 
-  // 🔹 Fetch AI-generated trip plan
   useEffect(() => {
     if (!tripData) {
       navigate("/create-trip");
@@ -51,7 +50,7 @@ const TripResult = () => {
   if (!aiResult || aiResult.error)
     return <ErrorState onBack={() => navigate("/create-trip")} />;
 
-  // 🔹 Destructure AI results
+
   const {
     hotels,
     itinerary,
@@ -61,7 +60,7 @@ const TripResult = () => {
     image,
   } = aiResult;
 
-  // 🔹 Save Trip to Backend
+
   const handleSaveTrip = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -94,14 +93,14 @@ const TripResult = () => {
 
     if (chatGroupId) {
       toast.success("Joined solo-traveler group — redirecting...");
-      // navigate to chat page
+ 
       navigate(`/chat/${chatGroupId}`);
     }
   } catch (err) {
     toast.error("Failed to save trip");
   }
 };
-  // 🔹 Helper to format prices
+
   const renderPrice = (price) =>
     price
       ? typeof price === "object"
@@ -109,7 +108,7 @@ const TripResult = () => {
         : price
       : "N/A";
 
-  // 🔹 Map redirect
+
   const handleMapRedirect = () => {
     navigate("/trip-map", {
       state: { location: tripData.location, hotels, itinerary },

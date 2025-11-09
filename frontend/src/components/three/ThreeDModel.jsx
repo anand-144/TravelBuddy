@@ -9,7 +9,6 @@ function AnimatedModel({ path }) {
 
   useEffect(() => {
     if (actions && Object.keys(actions).length > 0) {
-      // Play first available animation
       const firstAction = actions[Object.keys(actions)[0]];
       firstAction.play();
     }

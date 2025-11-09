@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
-import { Toaster } from "react-hot-toast"; // ✅ Import Toaster
+import { Toaster } from "react-hot-toast";
 import CreateTrip from "./pages/CreateTrip";
 import Home from "./pages/Home";
 import Header from "./components/Header";
@@ -15,29 +16,23 @@ import MemoryBoard from "./components/MemoryBoard";
 import SavedTrips from "./pages/SavedTrips";
 import GroupChat from "./pages/GroupChat";
 import NotFound from "./pages/NotFound";
-
-// ✅ Separate wrapper to access useLocation inside Router
+import ServerLoading from "./pages/ServerLoading";
 const AppContent = () => {
   const location = useLocation();
-
-  // ✅ Hide Footer on login/register pages
   const hideFooter = ["/login", "/register"].includes(location.pathname);
 
   return (
     <>
-      {/* ✅ Global Toaster (for toast notifications anywhere in app) */}
       <Toaster
         position="top-right"
         toastOptions={{
           duration: 3000,
-          style: {
-            background: "#333",
-            color: "#fff",
-          },
+          style: { background: "#333", color: "#fff" },
         }}
       />
 
       <Header />
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -53,13 +48,23 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {/* ✅ Footer visible on all pages except login/register */}
       {!hideFooter && <Footer />}
     </>
   );
 };
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <ServerLoading />;
+  }
+
   return (
     <Router>
       <AuthProvider>

@@ -16,7 +16,7 @@ function AnimatedTraveler({ path }) {
   return (
     <primitive
       object={scene}
-      scale={1.6}             // ✅ balanced for login screen
+      scale={1.6}
       position={[0, -2.8, 0]}
       rotation={[0, Math.PI, 0]}
     />

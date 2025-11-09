@@ -11,10 +11,9 @@ const tripSchema = new mongoose.Schema(
     duration: { type: String },
     travelers: { type: String },
     budget: { type: String },
-    total_estimate: { type: mongoose.Schema.Types.Mixed }, // can store numbers or objects
+    total_estimate: { type: mongoose.Schema.Types.Mixed },
     image: { type: String },
 
-    // Store complex nested data from AI result
     hotels: { type: Array, default: [] },
     itinerary: { type: Array, default: [] },
     optional_experiences: { type: Array, default: [] },

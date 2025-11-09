@@ -2,7 +2,6 @@ import Memory from "../models/Memory.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
-// 🟢 GET all memories
 export const getMemories = async (req, res) => {
   try {
     const memories = await Memory.find().sort({ createdAt: -1 });
@@ -13,7 +12,6 @@ export const getMemories = async (req, res) => {
   }
 };
 
-// 🟢 POST new memory (image + note)
 export const createMemory = async (req, res) => {
   try {
     const { note } = req.body;
@@ -21,7 +19,6 @@ export const createMemory = async (req, res) => {
       return res.status(400).json({ message: "Image file is required" });
     }
 
-    // Upload image buffer to Cloudinary
     const uploadStream = () =>
       new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
@@ -49,16 +46,13 @@ export const createMemory = async (req, res) => {
   }
 };
 
-// 🟢 DELETE memory
 export const deleteMemory = async (req, res) => {
   try {
     const memory = await Memory.findById(req.params.id);
     if (!memory) return res.status(404).json({ message: "Memory not found" });
 
-    // Delete from Cloudinary
     await cloudinary.uploader.destroy(memory.publicId);
 
-    // Delete from DB
     await memory.deleteOne();
 
     res.status(200).json({ message: "Memory deleted successfully" });

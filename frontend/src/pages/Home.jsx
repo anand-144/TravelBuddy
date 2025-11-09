@@ -9,7 +9,7 @@ const AnimatedCounter = ({ target, duration = 2, suffix = "" }) => {
 
   useEffect(() => {
     let start = 0;
-    const increment = target / (duration * 60); // approx 60 frames per sec
+    const increment = target / (duration * 60); 
     const interval = setInterval(() => {
       start += increment;
       if (start >= target) {

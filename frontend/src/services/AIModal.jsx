@@ -1,4 +1,3 @@
-// 📦 generateTravelPlan.js
 import { GoogleGenAI } from "@google/genai";
 import { AI_PROMPT } from "../components/Options";
 
@@ -8,9 +7,7 @@ const lastPlanCache = {};
 const MAX_DAYS_PER_SEGMENT = 10;
 const isDev = import.meta.env.DEV;
 
-/* ---------------------------------------------------------
-   🧠 Safe Parse with JSON Repair — No Warnings, No Failures
---------------------------------------------------------- */
+
 function robustParse(rawText) {
   if (!rawText || typeof rawText !== "string") {
     return baseFallback("Empty AI response");
@@ -28,7 +25,7 @@ function robustParse(rawText) {
         .replace(/\r?\n|\r/g, " ")
         .replace(/\s{2,}/g, " ")
         .replace(/“|”|‘|’/g, '"')
-        .replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":') // ensure keys quoted
+        .replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":')
         .replace(/'/g, '"')
         .replace(/,\s*([\]}])/g, "$1")
         .trim();

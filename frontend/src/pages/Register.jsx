@@ -18,7 +18,7 @@ const Register = () => {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // ---------- Normal Register ----------
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -34,7 +34,7 @@ const Register = () => {
     }
   };
 
-  // ---------- Google Register/Login ----------
+
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
