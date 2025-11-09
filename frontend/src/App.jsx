@@ -15,7 +15,6 @@ import MemoryBoard from "./components/MemoryBoard";
 import SavedTrips from "./pages/SavedTrips";
 import GroupChat from "./pages/GroupChat";
 import NotFound from "./pages/NotFound";
-import ServerLoading from "./pages/ServerLoading";
 const AppContent = () => {
   const location = useLocation();
   const hideFooter = ["/login", "/register"].includes(location.pathname);
