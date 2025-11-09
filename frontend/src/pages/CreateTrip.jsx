@@ -111,7 +111,7 @@ const CreateTrip = () => {
         <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
           Your Budget <span>💰</span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
           {SelectBudgetOptions.map((item, index) => (
             <div
               key={index}
@@ -119,18 +119,16 @@ const CreateTrip = () => {
                 setSelectedBudget(index);
                 handleInputChange("budget", item.title);
               }}
-              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${
-                selectedBudget === index
+              className={`p-6 rounded-2xl transition-all transform hover:-translate-y-1 
+      ${selectedBudget === index
                   ? "bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-xl"
-                  : "bg-white border-gray-200 hover:border-indigo-400 hover:shadow-md"
-              }`}
-            >
+                  : "bg-white border hover:border-indigo-300 hover:shadow-lg"}`
+              }>
               <div className="text-4xl mb-2">{item.icon}</div>
               <h3 className="font-semibold text-lg">{item.title}</h3>
               <p
-                className={`text-sm mt-1 ${
-                  selectedBudget === index ? "text-sky-100" : "text-gray-500"
-                }`}
+                className={`text-sm mt-1 ${selectedBudget === index ? "text-sky-100" : "text-gray-500"
+                  }`}
               >
                 {item.desc}
               </p>
@@ -152,18 +150,16 @@ const CreateTrip = () => {
                 setSelectedTraveler(index);
                 handleInputChange("travelers", item.title);
               }}
-              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${
-                selectedTraveler === index
-                  ? "bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-xl"
-                  : "bg-white border-gray-200 hover:border-pink-400 hover:shadow-md"
-              }`}
+              className={`p-6 rounded-2xl border transition-all transform hover:-translate-y-1 cursor-pointer ${selectedTraveler === index
+                ? "bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-xl"
+                : "bg-white border-gray-200 hover:border-pink-400 hover:shadow-md"
+                }`}
             >
               <div className="text-4xl mb-2">{item.icon}</div>
               <h3 className="font-semibold text-lg">{item.title}</h3>
               <p
-                className={`text-sm mt-1 ${
-                  selectedTraveler === index ? "text-pink-100" : "text-gray-500"
-                }`}
+                className={`text-sm mt-1 ${selectedTraveler === index ? "text-pink-100" : "text-gray-500"
+                  }`}
               >
                 {item.desc}
               </p>

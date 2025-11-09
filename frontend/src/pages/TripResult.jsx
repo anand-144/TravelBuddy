@@ -130,10 +130,10 @@ const TripResult = () => {
         />
 
         {/* 🔹 View on Map Button */}
-        <div className="flex justify-end mb-10">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <button
             onClick={handleMapRedirect}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full hover:shadow-lg transition-all hover:scale-105 font-semibold"
+ className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full hover:scale-105 hover:shadow-lg transition"
           >
             <FaMapMarkedAlt />
             View on Map
