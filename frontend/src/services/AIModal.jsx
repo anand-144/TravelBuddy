@@ -63,7 +63,6 @@ function baseFallback(reason) {
     itinerary: {},
     optional_experiences: [],
     travel_tips: [],
-    total_estimate: "N/A",
     _warning: reason,
   };
 }
@@ -78,7 +77,6 @@ function normalizePlan(obj) {
     itinerary: obj.itinerary || {},
     optional_experiences: obj.optional_experiences || [],
     travel_tips: obj.travel_tips || [],
-    total_estimate: obj.total_estimate || "N/A",
   };
 }
 
@@ -106,7 +104,6 @@ STRICT INSTRUCTIONS:
   "itinerary": { "day${segment.startDay}": [...], ... },
   "optional_experiences": [...],
   "travel_tips": [...],
-  "total_estimate": "₹xxxx"
 }`;
 }
 

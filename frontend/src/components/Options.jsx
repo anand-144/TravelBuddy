@@ -80,7 +80,6 @@ export const AI_PROMPT =
   '  "itinerary": { "day1": [...], "day2": [...], "day3": [...] },\n' +
   '  "optional_experiences": [...],\n' +
   '  "travel_tips": [...],\n' +
-  '  "total_estimate": "₹xxxx"\n' +
   '}\n' +
   'Do not include markdown symbols (**), bullets (•), or formatting — return clean plain text only. ' +
   'Return strictly valid JSON in this format: { ... }';

@@ -56,7 +56,6 @@ const TripResult = () => {
     itinerary,
     optional_experiences,
     travel_tips,
-    total_estimate,
     image,
   } = aiResult;
 
@@ -76,7 +75,6 @@ const TripResult = () => {
           duration: tripData.duration,
           travelers: tripData.travelers,
           budget: tripData.budget,
-          total_estimate,
           image,
           hotels,
           itinerary,
@@ -125,7 +123,6 @@ const TripResult = () => {
           onBack={() => navigate("/create-trip")}
           tripData={tripData}
           bannerImage={image}
-          totalEstimate={total_estimate}
         />
 
         {/* 🔹 View on Map Button */}
